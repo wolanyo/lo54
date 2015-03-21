@@ -7,8 +7,9 @@ package fr.utbm.lo54.coursesmanager.core.entity;
 
 /**
  *
- * @author fnac
+ * @author Eric
  */
+
 public class Client {
  private Integer id;
  private String lastName;

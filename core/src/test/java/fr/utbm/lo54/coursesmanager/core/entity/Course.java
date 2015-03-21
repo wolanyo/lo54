@@ -7,8 +7,10 @@ package fr.utbm.lo54.coursesmanager.core.entity;
 
 /**
  *
- * @author fnac
+ * @author Eric
  */
+
+
 public class Course {
     private String code;
     private String title;
