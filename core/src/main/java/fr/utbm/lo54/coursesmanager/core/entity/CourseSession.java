@@ -24,6 +24,14 @@ public class CourseSession {
         this.courseCode = courseCode;
         this.locationId = locationId;
     }
+    
+    public CourseSession() {
+        this.id = null;
+        this.start = null;
+        this.end = null;
+        this.courseCode = null;
+        this.locationId = null;
+    }
 
     public Integer getId() {
         return id;

@@ -27,6 +27,16 @@ public class Client {
         this.email = email;
         this.sessionId = session_Id;
     }
+    
+    public Client(){
+    	this.id = null;
+        this.lastName = null;
+        this.firstName = null;
+        this.address = null;
+        this.phone = null;
+        this.email = null;
+        this.sessionId = null;
+    }
 
     public Integer getId() {
         return id;

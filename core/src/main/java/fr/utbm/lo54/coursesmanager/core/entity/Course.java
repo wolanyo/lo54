@@ -17,7 +17,12 @@ public class Course {
         this.code = code;
         this.title = title;
     }
-
+    
+    public Course() {
+    	this.code = null;
+        this.title = null;
+    }
+    
     public String getCode() {
         return code;
     }

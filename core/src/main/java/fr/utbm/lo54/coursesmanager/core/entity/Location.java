@@ -19,6 +19,11 @@ public class Location {
         this.id = id;
         this.city = city;
     }
+    
+    public Location() {
+        this.id = null;
+        this.city = null;
+    }
 
     public Integer getId() {
         return id;
