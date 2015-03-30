@@ -3,7 +3,7 @@
 <hibernate-mapping>
     <class name="fr.utbm.lo54.coursesmanager.core.entity.Course" table="course">
         <id name="code" column="CODE">
-            <generator class="identity"/>
+            <generator class="assigned"/>
         </id>
         <property name="title" column="TITLE" length="50"/>
     </class>
