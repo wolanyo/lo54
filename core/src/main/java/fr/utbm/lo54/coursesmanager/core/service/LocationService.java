@@ -1,32 +1,64 @@
-/**
- * 
- */
 package fr.utbm.lo54.coursesmanager.core.service;
 
-import java.util.List;
+import java.util.Set;
 
 import fr.utbm.lo54.coursesmanager.core.entity.Location;
+import fr.utbm.lo54.coursesmanager.core.repository.HibernateLocationDAO;
 
-/**
- * @author kemour
- *
- */
 public class LocationService {
-	
-	//service pour enregistrer un Location
-	public void registerLocation(Location location){
-		
-	}
-	
-	//get a location by ID
-	public Location getLocation(Integer id){
-		
-		return null ; //replace null by Location object
-	}
-	
-	//get a list of Location
-	public List<Location> getListLocation(){
-		
-		return null ; //replace null by a List of Location
-	}
+
+    /**
+     * SAVE A LOCATION
+     * 
+     * @param location
+     */
+    public void registerLocation( Location location ) {
+        HibernateLocationDAO hibernatelocationDAO = new HibernateLocationDAO();
+        hibernatelocationDAO.save( location );
+
+    }
+
+    /**
+     * get a location by ID
+     * 
+     */
+    public static Location getLocation( long id ) {
+        HibernateLocationDAO hibernatelocationDAO = new HibernateLocationDAO();
+        Location location = hibernatelocationDAO.getById( id );
+        return location;
+    }
+
+    /**
+     * get a list of Location
+     * 
+     * @return
+     */
+    public static Set<Location> getList() {
+        HibernateLocationDAO hibernatelocationDAO = new HibernateLocationDAO();
+        Set<Location> location = hibernatelocationDAO.getList();
+        return location;
+    }
+
+    /**
+     * 
+     * @param loc
+     * @return
+     */
+    public static Location update( Location loc ) {
+        HibernateLocationDAO hibernatelocationDAO = new HibernateLocationDAO();
+        Location location = hibernatelocationDAO.update( loc );
+        return location;
+    }
+
+    /**
+     * 
+     * @param loc
+     * @return
+     */
+    public static Location delete( Location loc ) {
+        HibernateLocationDAO hibernatelocationDAO = new HibernateLocationDAO();
+        Location location = hibernatelocationDAO.delete( loc );
+        return location;
+    }
+
 }
