@@ -1,4 +1,4 @@
-package fr.utbm.lo5.coursesmanage.core.Test;
+package fr.utbm.lo54.coursesmanager.core.Test;
 
 public class Launcher {
     public static void main( String[] args ) {
