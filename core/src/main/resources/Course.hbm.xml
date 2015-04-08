@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+	
 <hibernate-mapping>
     <class name="fr.utbm.lo54.coursesmanager.core.entity.Course" table="course">
         <id name="code" column="CODE">
             <generator class="assigned"/>
         </id>
-        <property name="title" column="TITLE" length="50"/>
+        <property name="title" column="TITLE"/>
     </class>
 </hibernate-mapping>
