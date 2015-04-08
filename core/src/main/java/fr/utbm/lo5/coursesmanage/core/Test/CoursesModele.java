@@ -1,4 +1,4 @@
-package fr.utbm.lo5.courssmanage.core.Test;
+package fr.utbm.lo5.coursesmanage.core.Test;
 
 import java.util.ArrayList;
 import java.util.Iterator;
