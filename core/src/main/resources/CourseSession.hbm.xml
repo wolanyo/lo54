@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>   
+	<class name="fr.utbm.lo54.coursesmanager.core.entity.CourseSession" table="course_session">
+		<id name="id" column="ID">
+			<generator class="identity"></generator>
+		</id>        
+		<property name="startDate" column="STARTDATE" type="date" />
+		<property name="endDate" column="ENDDATE" type="date" />
+		
+		<!-- mapping des associations : (Many to one - plusieurs à 1) avec clé étrangère
+Plusieurs instances cours_session peuvent référencer la même instance de cours ou Location 
+une instance de course ou ville n'a pas connaissance de cours_session  (association unidirectionnelle)
+cascade : indique ts les opérations CRUD dHibernate sont appliquées/propagé en cascade au niveau des jointures
+		 -->
+		<many-to-one name="location" class="fr.utbm.lo54.coursesmanager.core.entity.Location" column="LOCATION_ID" cascade="all" />
+		<many-to-one name="course" class="fr.utbm.lo54.coursesmanager.core.entity.Course" column="COURSE_CODE" cascade="all" />
+<!-- 		<many-to-one name="course" column="COURSE_CODE" cascade="all" /> -->
+<!-- 		<many-to-one name="location" column="LOCATION_ID" cascade="all" /> -->
+
+		
+	</class>
+</hibernate-mapping>
+
+
+

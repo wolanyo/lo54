@@ -1,80 +1,89 @@
 package fr.utbm.lo54.coursesmanager.core.repository;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.stat.Statistics;
 
 import fr.utbm.lo54.coursesmanager.core.entity.Location;
 import fr.utbm.lo54.coursesmanager.core.util.HibernateUtil;
 
 public class HibernateLocationDAO {
-    private SessionFactory sessionFactory;
 
-    public HibernateLocationDAO() {
-        sessionFactory = HibernateUtil.getSessionFactory();
-    }
-
-    public HibernateLocationDAO( SessionFactory ses ) {
-        this.sessionFactory = ses;
-    }
+    private SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+    Statistics             stats          = HibernateUtil.getSessionFactory().getStatistics();
 
     /**
-     * GET LIST OF LOCATION
-     * 
-     * @return
+     * GET LIST of all location object
      */
-    public Set<Location> getList() {
+    public List<Location> getAllLocations() {
         Session session = this.sessionFactory.openSession();
-        HashSet<Location> locations = new HashSet<Location>();
+        // Transaction tx = null;
+        List<Location> locationList = new ArrayList<Location>();
         try {
-            Query q = session.createQuery( "FROM Location" );
-            @SuppressWarnings( "unchecked" )
-            List<Location> l = q.list();
-            for ( Location s : l ) {
-                locations.add( s );
-            }
-        } catch ( HibernateException e ) {
-            e.printStackTrace();
+            // tx = session.beginTransaction();
+            Query query = session.createQuery( "FROM Location" );
+            locationList = query.list();
+            // tx.commit();
+        } catch ( HibernateException he ) {
+            he.printStackTrace();
+            // if ( tx != null ) {
+            // try {
+            // tx.rollback();
+            // } catch ( HibernateException he2 ) {
+            // he2.printStackTrace();
+            // }
+            // }
         } finally {
             if ( session != null ) {
                 try {
+                    session.flush();
                     session.close();
-                } catch ( HibernateException f ) {
-                    f.printStackTrace();
+                    stats.logSummary();
+                } catch ( HibernateException he ) {
+                    he.printStackTrace();
                 }
             }
         }
-        return locations;
+        return locationList;
     }
 
     /**
-     * 
-     * GET LOCATION BY ID
-     * 
-     * @param id
-     * @return
+     * GET AN OBJECT Location by ID
      */
-    public Location getById( Long id ) {
+    public Location getLocationById( long id ) {
         Session session = this.sessionFactory.openSession();
+        // Transaction tx = null;
         Location location = new Location();
         try {
-            Query q = session.createQuery( "FROM Location WHERE id = :id" );
-            q.setParameter( "id", id );
-            location = (Location) q.uniqueResult();
-        } catch ( HibernateException e ) {
-            e.printStackTrace();
+            // tx = session.beginTransaction();
+            String queryString = "FROM Location WHERE id = :id";
+            Query query = session.createQuery( queryString );
+            query.setParameter( "id", id );
+            location = (Location) query.uniqueResult();
+            // tx.commit();
+        } catch ( HibernateException he ) {
+            he.printStackTrace();
+            // if ( tx != null ) {
+            // try {
+            // tx.rollback();
+            // } catch ( HibernateException he2 ) {
+            // he2.printStackTrace();
+            // }
+            // }
         } finally {
             if ( session != null ) {
                 try {
+                    session.flush();
                     session.close();
-                } catch ( HibernateException f ) {
-                    f.printStackTrace();
+                    stats.logSummary();
+                } catch ( HibernateException he ) {
+                    he.printStackTrace();
                 }
             }
         }
@@ -82,87 +91,107 @@ public class HibernateLocationDAO {
     }
 
     /**
-     * SAVE A LOCATION
-     * 
-     * @param loc
-     * @return
+     * CREATE an object Location in DataBase
      */
-    public Location save( Location loc ) {
+    public void createLocation( Location location ) {
         Session session = this.sessionFactory.openSession();
         Transaction tx = null;
         try {
             tx = session.beginTransaction();
-            session.save( loc );
+            session.persist( location );
             tx.commit();
-        } catch ( HibernateException e ) {
-            e.printStackTrace();
+        } catch ( HibernateException he ) {
+            he.printStackTrace();
+            if ( tx != null ) {
+                try {
+                    tx.rollback();
+                } catch ( HibernateException he2 ) {
+                    he2.printStackTrace();
+                }
+            }
         } finally {
             if ( session != null ) {
                 try {
+                    session.flush();
                     session.close();
-                } catch ( HibernateException f ) {
-                    f.printStackTrace();
+                    stats.logSummary();
+                } catch ( HibernateException he ) {
+                    he.printStackTrace();
                 }
             }
+
         }
-        return loc;
     }
 
     /**
-     * UPDATE A LOCATION
-     * 
-     * @param loc
-     * @return
+     * UPDATE A Location
      */
-    public Location update( Location loc ) {
+    public void updateLocation( Location location ) {
         Session session = this.sessionFactory.openSession();
         Transaction tx = null;
         try {
             tx = session.beginTransaction();
-            session.merge( loc );
+            session.merge( location );
             tx.commit();
-            session.flush();
-        } catch ( HibernateException e ) {
-            e.printStackTrace();
+        } catch ( HibernateException he ) {
+            he.printStackTrace();
+            if ( tx != null ) {
+                try {
+                    tx.rollback();
+                } catch ( HibernateException he2 ) {
+                    he2.printStackTrace();
+                }
+            }
         } finally {
             if ( session != null ) {
                 try {
+                    session.flush();
                     session.close();
-                } catch ( HibernateException f ) {
-                    f.printStackTrace();
+                    stats.logSummary();
+                } catch ( HibernateException he ) {
+                    he.printStackTrace();
                 }
             }
+
         }
-        return loc;
     }
 
     /**
-     * DELETE A LOCATION
-     * 
-     * @param loc
-     * @return
+     * DELETE A Location
      */
-    public Location delete( Location loc ) {
+    public void deleteLocation( Location location ) {
         Session session = this.sessionFactory.openSession();
         Transaction tx = null;
         try {
             tx = session.beginTransaction();
-            session.delete( loc );
+            session.delete( location );
+            // Rechercher puis supprimer un enregistrement
+            // Location client = (Location)
+            // session.load(Location.class, new
+            // String(code));
+            // session.delete(client);
             tx.commit();
             session.flush();
-        } catch ( HibernateException e ) {
-            e.printStackTrace();
+
+        } catch ( HibernateException he ) {
+            he.printStackTrace();
+            if ( tx != null ) {
+                try {
+                    tx.rollback();
+                } catch ( HibernateException he2 ) {
+                    he2.printStackTrace();
+                }
+            }
         } finally {
             if ( session != null ) {
                 try {
+                    session.flush();
                     session.close();
-                } catch ( HibernateException f ) {
-                    f.printStackTrace();
+                    stats.logSummary();
+                } catch ( HibernateException he ) {
+                    he.printStackTrace();
                 }
             }
         }
-        loc.setId( null );
-        return loc;
     }
-
 }

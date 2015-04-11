@@ -1,35 +1,32 @@
 package fr.utbm.lo54.coursesmanager.core.entity;
 
+import java.util.Date;
+
 public class CourseSession {
 
-    private Integer id;
-    private String  startdate;
-    private String  enddate;
-    // private Course course;
-    // private Location location;
-    private String  courseCode;
-    private Integer locationId;
+    private Long     id;
+    private Date     startdate;
+    private Date     enddate;
+    private Course   course;
+    private Location location;
+    private String   courseCode;
+    private Integer  locationId;
 
     public CourseSession() {
     }
 
-    // public CourseSession( Integer id, String startdate, String enddate,
-    // Course course, Location location )
-    public CourseSession( Integer id, String startdate, String enddate, String courseCode, Integer locationId ) {
-        this.id = id;
+    public CourseSession( Date startdate, Date enddate, Course course, Location location ) {
         this.startdate = startdate;
         this.enddate = enddate;
-        this.courseCode = courseCode;
-        this.locationId = locationId;
-        // this.location = location;
-        // this.courseCode = = course;
+        this.location = location;
+        this.course = course;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId( Integer id ) {
+    public void setId( Long id ) {
         this.id = id;
     }
 
@@ -49,36 +46,36 @@ public class CourseSession {
         this.locationId = locationId;
     }
 
-    public String getStartdate() {
+    public Date getStartdate() {
         return startdate;
     }
 
-    public void setStartdate( String startdate ) {
+    public void setStartdate( Date startdate ) {
         this.startdate = startdate;
     }
 
-    public String getEnddate() {
+    public Date getEnddate() {
         return enddate;
     }
 
-    public void setEnddate( String enddate ) {
+    public void setEnddate( Date enddate ) {
         this.enddate = enddate;
     }
 
-    // public Course getCourse() {
-    // return course;
-    // }
-    //
-    // public void setCourse( Course course ) {
-    // this.course = course;
-    // }
+    public Course getCourse() {
+        return course;
+    }
 
-    // public Location getLocation() {
-    // return location;
-    // }
-    //
-    // public void setLocation( Location location ) {
-    // this.location = location;
-    // }
+    public void setCourse( Course course ) {
+        this.course = course;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation( Location location ) {
+        this.location = location;
+    }
 
 }

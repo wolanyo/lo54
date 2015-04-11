@@ -1,34 +1,36 @@
 package fr.utbm.lo54.coursesmanager.core.entity;
 
+
 public class Client {
-    private Integer id;
-    private String  lastName;
-    private String  firstName;
-    private String  address;
-    private String  phone;
-    private String  email;
+    private Long          id;
+    private String        lastName;
+    private String        firstName;
+    private String        address;
+    private String        phone;
+    private String        email;
+    private CourseSession coursesession;
+
+    // à utiliser si un client est présent une seule fois en base
     // private Set<CourseSession> coursesessions;
-    private Integer sessionId;
 
     public Client() {
     }
 
-    public Client( Integer id, String lastName, String firstName, String address, String phone, String email,
-            Integer session_Id ) {
-        this.id = id;
+    public Client( String lastName, String firstName, String address, String phone, String email,
+            CourseSession coursesession ) {
         this.lastName = lastName;
         this.firstName = firstName;
         this.address = address;
         this.phone = phone;
         this.email = email;
-        this.sessionId = session_Id;
+        this.coursesession = coursesession;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId( Integer id ) {
+    public void setId( Long id ) {
         this.id = id;
     }
 
@@ -72,18 +74,11 @@ public class Client {
         this.email = email;
     }
 
-    public Integer getSession_Id() {
-        return sessionId;
+    public CourseSession getCoursesession() {
+        return coursesession;
     }
 
-    public void setSession_Id( Integer session_Id ) {
-        this.sessionId = session_Id;
+    public void setCoursesession( CourseSession coursesession ) {
+        this.coursesession = coursesession;
     }
-
-    // public Set<CourseSession> getCoursesessions() {
-    // return coursesessions;
-    // }
-    // public void setCoursesessions(Set<CourseSession> coursesessions) {
-    // this.coursesessions = coursesessions;
-    // }
 }
