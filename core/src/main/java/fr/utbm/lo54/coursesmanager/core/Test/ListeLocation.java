@@ -18,8 +18,8 @@ public class ListeLocation extends JFrame {
 
     public ListeLocation() {
         super();
-        this.setTitle( "Courses List" );
-        this.setSize( 300, 200 );
+        this.setTitle( "Location List" );
+        this.setSize( 300, 300 );
         this.setLocationRelativeTo( null );
 
         modele = new ModeleLocation();

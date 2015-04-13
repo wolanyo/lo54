@@ -8,7 +8,6 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.stat.Statistics;
 
 import fr.utbm.lo54.coursesmanager.core.entity.Location;
 import fr.utbm.lo54.coursesmanager.core.util.HibernateUtil;
@@ -16,35 +15,36 @@ import fr.utbm.lo54.coursesmanager.core.util.HibernateUtil;
 public class HibernateLocationDAO {
 
     private SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-    Statistics             stats          = HibernateUtil.getSessionFactory().getStatistics();
+
+    // Statistics stats = HibernateUtil.getSessionFactory().getStatistics();
 
     /**
      * GET LIST of all location object
      */
     public List<Location> getAllLocations() {
         Session session = this.sessionFactory.openSession();
-        // Transaction tx = null;
+        Transaction tx = null;
         List<Location> locationList = new ArrayList<Location>();
         try {
-            // tx = session.beginTransaction();
+            tx = session.beginTransaction();
             Query query = session.createQuery( "FROM Location" );
             locationList = query.list();
-            // tx.commit();
+            tx.commit();
         } catch ( HibernateException he ) {
             he.printStackTrace();
-            // if ( tx != null ) {
-            // try {
-            // tx.rollback();
-            // } catch ( HibernateException he2 ) {
-            // he2.printStackTrace();
-            // }
-            // }
+            if ( tx != null ) {
+                try {
+                    tx.rollback();
+                } catch ( HibernateException he2 ) {
+                    he2.printStackTrace();
+                }
+            }
         } finally {
             if ( session != null ) {
                 try {
                     session.flush();
                     session.close();
-                    stats.logSummary();
+                    // stats.logSummary();
                 } catch ( HibernateException he ) {
                     he.printStackTrace();
                 }
@@ -58,30 +58,30 @@ public class HibernateLocationDAO {
      */
     public Location getLocationById( long id ) {
         Session session = this.sessionFactory.openSession();
-        // Transaction tx = null;
+        Transaction tx = null;
         Location location = new Location();
         try {
-            // tx = session.beginTransaction();
+            tx = session.beginTransaction();
             String queryString = "FROM Location WHERE id = :id";
             Query query = session.createQuery( queryString );
             query.setParameter( "id", id );
             location = (Location) query.uniqueResult();
-            // tx.commit();
+            tx.commit();
+            session.flush();
         } catch ( HibernateException he ) {
             he.printStackTrace();
-            // if ( tx != null ) {
-            // try {
-            // tx.rollback();
-            // } catch ( HibernateException he2 ) {
-            // he2.printStackTrace();
-            // }
-            // }
+            if ( tx != null ) {
+                try {
+                    tx.rollback();
+                } catch ( HibernateException he2 ) {
+                    he2.printStackTrace();
+                }
+            }
         } finally {
             if ( session != null ) {
                 try {
-                    session.flush();
                     session.close();
-                    stats.logSummary();
+                    // stats.logSummary();
                 } catch ( HibernateException he ) {
                     he.printStackTrace();
                 }
@@ -100,6 +100,7 @@ public class HibernateLocationDAO {
             tx = session.beginTransaction();
             session.persist( location );
             tx.commit();
+            session.flush();
         } catch ( HibernateException he ) {
             he.printStackTrace();
             if ( tx != null ) {
@@ -112,9 +113,8 @@ public class HibernateLocationDAO {
         } finally {
             if ( session != null ) {
                 try {
-                    session.flush();
                     session.close();
-                    stats.logSummary();
+                    // stats.logSummary();
                 } catch ( HibernateException he ) {
                     he.printStackTrace();
                 }
@@ -133,6 +133,7 @@ public class HibernateLocationDAO {
             tx = session.beginTransaction();
             session.merge( location );
             tx.commit();
+            session.flush();
         } catch ( HibernateException he ) {
             he.printStackTrace();
             if ( tx != null ) {
@@ -145,9 +146,8 @@ public class HibernateLocationDAO {
         } finally {
             if ( session != null ) {
                 try {
-                    session.flush();
                     session.close();
-                    stats.logSummary();
+                    // stats.logSummary();
                 } catch ( HibernateException he ) {
                     he.printStackTrace();
                 }
@@ -172,7 +172,6 @@ public class HibernateLocationDAO {
             // session.delete(client);
             tx.commit();
             session.flush();
-
         } catch ( HibernateException he ) {
             he.printStackTrace();
             if ( tx != null ) {
@@ -185,9 +184,8 @@ public class HibernateLocationDAO {
         } finally {
             if ( session != null ) {
                 try {
-                    session.flush();
                     session.close();
-                    stats.logSummary();
+                    // stats.logSummary();
                 } catch ( HibernateException he ) {
                     he.printStackTrace();
                 }

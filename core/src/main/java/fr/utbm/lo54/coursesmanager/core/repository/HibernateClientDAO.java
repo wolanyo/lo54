@@ -27,9 +27,10 @@ public class HibernateClientDAO {
         Transaction tx = null;
         try {
             tx = session.beginTransaction();
-            session.save( client );
+            // session.save( client );
+            session.merge( client );
+            // session.persist( client );
             tx.commit();
-            session.flush();
         } catch ( HibernateException he ) {
             he.printStackTrace();
             if ( tx != null ) {
@@ -69,7 +70,6 @@ public class HibernateClientDAO {
                 Hibernate.initialize( cs.getCoursesession() );
                 clientList.add( cs );
             }
-
             tx.commit();
             session.flush();
         } catch ( HibernateException he ) {
@@ -85,7 +85,7 @@ public class HibernateClientDAO {
             if ( session != null ) {
                 try {
                     session.close();
-                    stats.logSummary();
+                    // stats.logSummary();
                 } catch ( HibernateException he ) {
                     he.printStackTrace();
                 }
@@ -95,7 +95,7 @@ public class HibernateClientDAO {
     }
 
     /**
-     * GET AN OBJECT COURSESESSION by ID
+     * GET AN OBJECT Client by ID
      */
     public Client getClientById( long id ) {
         Session session = this.sessionFactory.openSession();
@@ -108,7 +108,6 @@ public class HibernateClientDAO {
             query.setParameter( "id", id );
             client = (Client) query.uniqueResult();
             tx.commit();
-            session.flush();
         } catch ( HibernateException he ) {
             he.printStackTrace();
             if ( tx != null ) {
@@ -122,7 +121,7 @@ public class HibernateClientDAO {
             if ( session != null ) {
                 try {
                     session.close();
-                    stats.logSummary();
+                    // stats.logSummary();
                 } catch ( HibernateException he ) {
                     he.printStackTrace();
                 }
@@ -141,7 +140,6 @@ public class HibernateClientDAO {
             tx = session.beginTransaction();
             session.merge( client );
             tx.commit();
-            // session.flush();
         } catch ( HibernateException he ) {
             he.printStackTrace();
             if ( tx != null ) {
@@ -155,7 +153,7 @@ public class HibernateClientDAO {
             if ( session != null ) {
                 try {
                     session.close();
-                    stats.logSummary();
+                    // stats.logSummary();
                 } catch ( HibernateException he ) {
                     he.printStackTrace();
                 }
@@ -193,9 +191,8 @@ public class HibernateClientDAO {
         } finally {
             if ( session != null ) {
                 try {
-                    session.flush();
                     session.close();
-                    stats.logSummary();
+                    // stats.logSummary();
                 } catch ( HibernateException he ) {
                     he.printStackTrace();
                 }

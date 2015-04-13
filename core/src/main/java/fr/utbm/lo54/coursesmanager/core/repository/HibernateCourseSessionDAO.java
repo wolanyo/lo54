@@ -38,6 +38,7 @@ public class HibernateCourseSessionDAO {
                 coursesSessionList.add( cs );
             }
             tx.commit();
+            session.flush();
         } catch ( HibernateException he ) {
             he.printStackTrace();
             if ( tx != null ) {
@@ -50,7 +51,6 @@ public class HibernateCourseSessionDAO {
         } finally {
             if ( session != null ) {
                 try {
-                    session.flush();
                     session.close();
                     stats.logSummary();
                 } catch ( HibernateException he ) {
@@ -82,6 +82,7 @@ public class HibernateCourseSessionDAO {
             }
 
             tx.commit();
+            session.flush();
         } catch ( HibernateException he ) {
             he.printStackTrace();
             if ( tx != null ) {
@@ -94,7 +95,6 @@ public class HibernateCourseSessionDAO {
         } finally {
             if ( session != null ) {
                 try {
-                    session.flush();
                     session.close();
                     stats.logSummary();
                 } catch ( HibernateException he ) {
@@ -110,30 +110,30 @@ public class HibernateCourseSessionDAO {
      */
     public CourseSession getCourseSessionById( long id ) {
         Session session = this.sessionFactory.openSession();
-        // Transaction tx = null;
+        Transaction tx = null;
         CourseSession courseSession = new CourseSession();
         try {
-            // tx = session.beginTransaction();
+            tx = session.beginTransaction();
             String queryString = "FROM CourseSession WHERE id = :id";
             Query query = session.createQuery( queryString );
             query.setParameter( "id", id );
             courseSession = (CourseSession) query.uniqueResult();
-            // tx.commit();
+            tx.commit();
+            session.flush();
         } catch ( HibernateException he ) {
             he.printStackTrace();
-            // if ( tx != null ) {
-            // try {
-            // tx.rollback();
-            // } catch ( HibernateException he2 ) {
-            // he2.printStackTrace();
-            // }
-            // }
+            if ( tx != null ) {
+                try {
+                    tx.rollback();
+                } catch ( HibernateException he2 ) {
+                    he2.printStackTrace();
+                }
+            }
         } finally {
             if ( session != null ) {
                 try {
-                    session.flush();
                     session.close();
-                    stats.logSummary();
+                    // stats.logSummary();
                 } catch ( HibernateException he ) {
                     he.printStackTrace();
                 }
@@ -152,6 +152,7 @@ public class HibernateCourseSessionDAO {
             tx = session.beginTransaction();
             session.persist( courseSession );
             tx.commit();
+            session.flush();
         } catch ( HibernateException he ) {
             he.printStackTrace();
             if ( tx != null ) {
@@ -164,9 +165,8 @@ public class HibernateCourseSessionDAO {
         } finally {
             if ( session != null ) {
                 try {
-                    session.flush();
                     session.close();
-                    stats.logSummary();
+                    // stats.logSummary();
                 } catch ( HibernateException he ) {
                     he.printStackTrace();
                 }
@@ -185,6 +185,7 @@ public class HibernateCourseSessionDAO {
             tx = session.beginTransaction();
             session.merge( courseSession );
             tx.commit();
+            session.flush();
         } catch ( HibernateException he ) {
             he.printStackTrace();
             if ( tx != null ) {
@@ -197,9 +198,8 @@ public class HibernateCourseSessionDAO {
         } finally {
             if ( session != null ) {
                 try {
-                    session.flush();
                     session.close();
-                    stats.logSummary();
+                    // stats.logSummary();
                 } catch ( HibernateException he ) {
                     he.printStackTrace();
                 }
@@ -224,7 +224,6 @@ public class HibernateCourseSessionDAO {
             // session.delete(client);
             tx.commit();
             session.flush();
-
         } catch ( HibernateException he ) {
             he.printStackTrace();
             if ( tx != null ) {
@@ -239,7 +238,7 @@ public class HibernateCourseSessionDAO {
                 try {
                     session.flush();
                     session.close();
-                    stats.logSummary();
+                    // stats.logSummary();
                 } catch ( HibernateException he ) {
                     he.printStackTrace();
                 }

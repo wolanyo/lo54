@@ -11,8 +11,8 @@
 		<property name="phone" column="PHONE" type="string" />
 		<property name="email" column="EMAIL" type="string" />
 		
-<!-- mapping des associations  : (Many to one ) avec clé étrangère
-**** cas 1 : on considére qu'une même personne s'inscrivant à 2 sessions est alors présente 2 fois dans la base.
+<!-- (Many to one ) avec clé étrangère
+**** cas 1 : ACCEPTE LES DOUBLONS, on considére qu'une même personne s'inscrivant à 2 sessions est alors présente 2 fois dans la base.
 
 Plusieurs instances Client peuvent référencer la même instance de course_session (Many to one - plusieurs à 1)
 une instance de course_session n'a pas connaissance de Client  (association unidirectionnelle)
@@ -21,15 +21,15 @@ cascade : indique ts les méthode opération CRUD Hibernate sont appliquées en 
 		 <many-to-one name="coursesession" column="SESSION_ID"  cascade="all"/>
 		 
 		 
-<!-- many-to-many
-**** cas 2 : on considére qu'une même personne est 1 fois dans la base.
+<!-- many-to-many avec table de jointure
+**** cas 2 : PAS DE  DOUBLONS, on considére qu'une même personne est 1 fois dans la base.
 Client dispose d'une liste d'instances de coursesessions 
 plusieurs instances de Client peuvent référencer la même instance de coursesessions
 Une table de jointure SESSION_CLIENT intermédiaire sera créée en base
 
 		<set name="coursesessions" table="SESSION_CLIENT" cascade="all">
 			<key column="CLIENT_ID" />
-			<many-to-many class="fr.utbm.lo54.coursesmanager.core.entity.CourseSession" column="SESSION_ID" />			
+			<many-to-many class="CourseSession" column="SESSION_ID" cascade="all"/>			
 		</set>
 -->		
 		

@@ -14,8 +14,6 @@ Pluseur session de formation peuvent se dérouler dans le  même location
 une instance de course ou ville n'a pas connaissance de cours_session  (association unidirectionnelle)
 cascade : indique ts les opérations CRUD dHibernate sont appliquées/propagé en cascade au niveau des jointures
 		 -->
-<!-- 		<many-to-one name="location" class="fr.utbm.lo54.coursesmanager.core.entity.Location" column="LOCATION_ID" cascade="all" /> -->
-<!-- 		<many-to-one name="course" class="fr.utbm.lo54.coursesmanager.core.entity.Course" column="COURSE_CODE" cascade="all" /> -->
 		<many-to-one name="course" column="COURSE_CODE" cascade="all" />
 		<many-to-one name="location" column="LOCATION_ID" cascade="all" />
 
