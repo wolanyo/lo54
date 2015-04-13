@@ -13,19 +13,17 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import fr.utbm.lo54.coursesmanager.core.TMP.CoursesModele;
-import fr.utbm.lo54.coursesmanager.core.TMP.FormulaireClient;
-
 public class CoursesJFrame extends JFrame {
 
     private static final long serialVersionUID = -6188817508920623384L;
-    private CoursesModele     modele;
+
+    // private CoursesModele modele;
 
     // private FormulaireClient pan = new FormulaireClient();
 
     public CoursesJFrame() {
         super();
-        setTitle( "Liste des Cours" );
+        setTitle( "Private Training courses manager" );
         setPreferredSize( new Dimension( 600, 100 ) );
         setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
 
@@ -40,7 +38,7 @@ public class CoursesJFrame extends JFrame {
         JButton showLocationbouton = new JButton( new ShowLocationAction() );
         JButton showClientbouton = new JButton( new ShowClientAction() );
         JButton showSessionbouton = new JButton( new ShowSessionAction() );
-        JButton addClientbouton = new JButton( new AddClientAction() );
+        // JButton addClientbouton = new JButton( new AddClientAction() );
 
         boutons.add( addCoursebouton );
         // boutons.add( deletebouton );
@@ -84,19 +82,19 @@ public class CoursesJFrame extends JFrame {
     }
 
     // classe écoutant le bouton Ajouter Client
-    private class AddClientAction extends AbstractAction {
-
-        private static final long serialVersionUID = 1L;
-
-        private AddClientAction() {
-            super( "Add Client" );
-        }
-
-        public void actionPerformed( ActionEvent e ) {
-            FormulaireClient form = new FormulaireClient();
-            // getContentPane().add( pan, BorderLayout.CENTER );
-        }
-    }
+    // private class AddClientAction extends AbstractAction {
+    //
+    // private static final long serialVersionUID = 1L;
+    //
+    // private AddClientAction() {
+    // super( "Add Client" );
+    // }
+    //
+    // public void actionPerformed( ActionEvent e ) {
+    // FormulaireClient form = new FormulaireClient();
+    // // getContentPane().add( pan, BorderLayout.CENTER );
+    // }
+    // }
 
     // classe écoutant le bouton lister Cours
     private class ShowAction extends AbstractAction {
