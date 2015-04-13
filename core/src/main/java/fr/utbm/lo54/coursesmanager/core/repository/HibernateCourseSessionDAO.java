@@ -3,6 +3,7 @@ package fr.utbm.lo54.coursesmanager.core.repository;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -19,27 +20,77 @@ public class HibernateCourseSessionDAO {
     Statistics             stats          = HibernateUtil.getSessionFactory().getStatistics();
 
     /**
-     * GET LIST of all courseSession object
+     * GET LIST of a courseSession by course
      */
-    public List<CourseSession> getAllCoursesSessions() {
+    public List<CourseSession> getCoursesSessionByCourse( String courseCode ) {
         Session session = this.sessionFactory.openSession();
-        // Transaction tx = null;
+        Transaction tx = null;
         List<CourseSession> coursesSessionList = new ArrayList<CourseSession>();
         try {
-            // tx = session.beginTransaction();
-            Query query = session.createQuery( "from CourseSession" );
-            coursesSessionList = query.list();
-
-            // tx.commit();
+            tx = session.beginTransaction();
+            Query query = session.createQuery( "FROM CourseSession WHERE COURSE_CODE = :code" );
+            query.setParameter( "code", courseCode );
+            List<CourseSession> cl = query.list();
+            // initialize proxy, this lazy collection
+            for ( CourseSession cs : cl ) {
+                Hibernate.initialize( cs.getCourse() );
+                Hibernate.initialize( cs.getLocation() );
+                coursesSessionList.add( cs );
+            }
+            tx.commit();
         } catch ( HibernateException he ) {
             he.printStackTrace();
-            // if ( tx != null ) {
-            // try {
-            // tx.rollback();
-            // } catch ( HibernateException he2 ) {
-            // he2.printStackTrace();
-            // }
-            // }
+            if ( tx != null ) {
+                try {
+                    tx.rollback();
+                } catch ( HibernateException he2 ) {
+                    he2.printStackTrace();
+                }
+            }
+        } finally {
+            if ( session != null ) {
+                try {
+                    session.flush();
+                    session.close();
+                    stats.logSummary();
+                } catch ( HibernateException he ) {
+                    he.printStackTrace();
+                }
+            }
+        }
+        return coursesSessionList;
+
+    }
+
+    /**
+     * GET LIST of all courseSession object
+     */
+    public List<CourseSession> getAllCoursesSession() {
+        Session session = this.sessionFactory.openSession();
+        Transaction tx = null;
+        List<CourseSession> coursesSessionList = new ArrayList<CourseSession>();
+        try {
+            tx = session.beginTransaction();
+            Query query = session.createQuery( "from CourseSession" );
+            List<CourseSession> cl = query.list();
+            // coursesSessionList = query.list();
+            // initialize proxy, this lazy collection
+            for ( CourseSession cs : cl ) {
+                Hibernate.initialize( cs.getCourse() );
+                Hibernate.initialize( cs.getLocation() );
+                coursesSessionList.add( cs );
+            }
+
+            tx.commit();
+        } catch ( HibernateException he ) {
+            he.printStackTrace();
+            if ( tx != null ) {
+                try {
+                    tx.rollback();
+                } catch ( HibernateException he2 ) {
+                    he2.printStackTrace();
+                }
+            }
         } finally {
             if ( session != null ) {
                 try {

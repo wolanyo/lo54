@@ -1,164 +1,205 @@
 package fr.utbm.lo54.coursesmanager.core.repository;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
+import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.stat.Statistics;
 
 import fr.utbm.lo54.coursesmanager.core.entity.Client;
 import fr.utbm.lo54.coursesmanager.core.util.HibernateUtil;
 
 public class HibernateClientDAO {
 
-    private SessionFactory sessionFactory;
-
-    public HibernateClientDAO() {
-        sessionFactory = HibernateUtil.getSessionFactory();
-    }
-
-    public HibernateClientDAO( SessionFactory ses ) {
-        this.sessionFactory = ses;
-    }
+    private SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+    Statistics             stats          = HibernateUtil.getSessionFactory().getStatistics();
 
     /**
-     * GET LIST OF USER
-     * 
-     * @return
+     * CREATE an object Client SESSION in DataBase
      */
-    public Set<Client> getList() {
+    public void createClient( Client client ) {
         Session session = this.sessionFactory.openSession();
-        HashSet<Client> clients = new HashSet<Client>();
+        Transaction tx = null;
         try {
-            Query q = session.createQuery( "FROM Client" );
-            @SuppressWarnings( "unchecked" )
-            List<Client> clt = q.list();
-            for ( Client s : clt ) {
-                clt.add( s );
+            tx = session.beginTransaction();
+            session.persist( client );
+            tx.commit();
+            session.flush();
+        } catch ( HibernateException he ) {
+            he.printStackTrace();
+            if ( tx != null ) {
+                try {
+                    tx.rollback();
+                } catch ( HibernateException he2 ) {
+                    he2.printStackTrace();
+                }
             }
-        } catch ( HibernateException e ) {
-            e.printStackTrace();
         } finally {
             if ( session != null ) {
                 try {
                     session.close();
-                } catch ( HibernateException f ) {
-                    f.printStackTrace();
+                    stats.logSummary();
+                } catch ( HibernateException he ) {
+                    he.printStackTrace();
                 }
             }
+
         }
-        return clients;
     }
 
     /**
-     * 
-     * @param id
-     * @return
+     * GET LIST of all client object
      */
-    public Client getById( Long id ) {
-        return getById( id, false, false, false );
+    public List<Client> getAllClient() {
+        Session session = this.sessionFactory.openSession();
+        Transaction tx = null;
+        List<Client> clientList = new ArrayList<Client>();
+        try {
+            tx = session.beginTransaction();
+            Query query = session.createQuery( "from Client" );
+            List<Client> cl = query.list();
+            // clientList = query.list();
+            // initialize proxy, this lazy collection
+            for ( Client cs : cl ) {
+                Hibernate.initialize( cs.getCoursesession() );
+                clientList.add( cs );
+            }
+
+            tx.commit();
+            session.flush();
+        } catch ( HibernateException he ) {
+            he.printStackTrace();
+            if ( tx != null ) {
+                try {
+                    tx.rollback();
+                } catch ( HibernateException he2 ) {
+                    he2.printStackTrace();
+                }
+            }
+        } finally {
+            if ( session != null ) {
+                try {
+                    session.close();
+                    stats.logSummary();
+                } catch ( HibernateException he ) {
+                    he.printStackTrace();
+                }
+            }
+        }
+        return clientList;
     }
 
-    public Client getById( Long id, Boolean sessionFactory, Boolean course, Boolean location ) {
+    /**
+     * GET AN OBJECT COURSESESSION by ID
+     */
+    public Client getClientById( long id ) {
         Session session = this.sessionFactory.openSession();
+        // Transaction tx = null;
         Client client = new Client();
-        // try {
-        // Query q = session.createQuery( "FROM Client WHERE id = :id" );
-        // q.setParameter( "id", id );
-        // client = (Client) q.list().get( 0 );
-        // if ( sessionFactory ) {
-        // Hibernate.initialize( client.getCoursesessions() );
-        // }
-        // if ( course ) {
-        // Hibernate.initialize(
-        // client.getCoursesessions().iterator().next().getCourse() );
-        // }
-        // if ( location ) {
-        // Hibernate.initialize(
-        // client.getCoursesessions().iterator().next().getLocation() );
-        // }
-        // } catch ( HibernateException e ) {
-        // e.printStackTrace();
-        // } finally {
-        // if ( session != null ) {
-        // try {
-        // session.close();
-        // } catch ( HibernateException f ) {
-        // f.printStackTrace();
-        // }
-        // }
-        // }
-
-        return client;
-    }
-
-    public Client create( Client client ) {
-        Session session = this.sessionFactory.openSession();
-        Transaction transact = null;
         try {
-            transact = session.beginTransaction();
-            session.save( client );
-            transact.commit();
-        } catch ( HibernateException e ) {
-            e.printStackTrace();
+            // tx = session.beginTransaction();
+            String queryString = "FROM Client WHERE id = :id";
+            Query query = session.createQuery( queryString );
+            query.setParameter( "id", id );
+            client = (Client) query.uniqueResult();
+            // tx.commit();
+            // session.flush();
+        } catch ( HibernateException he ) {
+            he.printStackTrace();
+            // if ( tx != null ) {
+            // try {
+            // tx.rollback();
+            // } catch ( HibernateException he2 ) {
+            // he2.printStackTrace();
+            // }
+            // }
         } finally {
             if ( session != null ) {
                 try {
                     session.close();
-                } catch ( HibernateException f ) {
-                    f.printStackTrace();
+                    stats.logSummary();
+                } catch ( HibernateException he ) {
+                    he.printStackTrace();
                 }
             }
         }
         return client;
     }
 
-    public Client update( Client client ) {
+    /**
+     * UPDATE A Client
+     */
+    public void updateClient( Client client ) {
         Session session = this.sessionFactory.openSession();
-        Transaction transact = null;
+        Transaction tx = null;
         try {
-            transact = session.beginTransaction();
+            tx = session.beginTransaction();
             session.merge( client );
-            transact.commit();
-            session.flush();
-        } catch ( HibernateException e ) {
-            e.printStackTrace();
+            tx.commit();
+            // session.flush();
+        } catch ( HibernateException he ) {
+            he.printStackTrace();
+            if ( tx != null ) {
+                try {
+                    tx.rollback();
+                } catch ( HibernateException he2 ) {
+                    he2.printStackTrace();
+                }
+            }
         } finally {
             if ( session != null ) {
                 try {
                     session.close();
-                } catch ( HibernateException f ) {
-                    f.printStackTrace();
+                    stats.logSummary();
+                } catch ( HibernateException he ) {
+                    he.printStackTrace();
                 }
             }
+
         }
-        return client;
     }
 
-    public Client delete( Client client ) {
+    /**
+     * DELETE A Client
+     */
+    public void deleteClient( Client client ) {
         Session session = this.sessionFactory.openSession();
-        Transaction transact = null;
+        Transaction tx = null;
         try {
-            transact = session.beginTransaction();
+            tx = session.beginTransaction();
             session.delete( client );
-            transact.commit();
+            // Rechercher puis supprimer un enregistrement
+            // Client client = (Client)
+            // session.load(Client.class, new
+            // String(code));
+            // session.delete(client);
+            tx.commit();
             session.flush();
-        } catch ( HibernateException e ) {
-            e.printStackTrace();
+
+        } catch ( HibernateException he ) {
+            he.printStackTrace();
+            if ( tx != null ) {
+                try {
+                    tx.rollback();
+                } catch ( HibernateException he2 ) {
+                    he2.printStackTrace();
+                }
+            }
         } finally {
             if ( session != null ) {
                 try {
+                    session.flush();
                     session.close();
-                } catch ( HibernateException f ) {
-                    f.printStackTrace();
+                    stats.logSummary();
+                } catch ( HibernateException he ) {
+                    he.printStackTrace();
                 }
             }
         }
-        client.setId( null );
-        return client;
     }
 }

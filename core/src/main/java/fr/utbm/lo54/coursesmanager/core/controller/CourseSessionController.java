@@ -18,4 +18,19 @@ public class CourseSessionController {
         return courseSessionsList;
 
     }
+
+    public List<CourseSession> showCourseSessionsByCourse( String codecourse ) {
+        CourseSessionService courseSessionService = new CourseSessionService();
+        List<CourseSession> courseSessionsList = courseSessionService.getCourseSessionsByCourse( codecourse );
+        return courseSessionsList;
+
+    }
+
+    public CourseSession showCourseSessionsByid( Long id ) {
+        CourseSessionService courseSessionService = new CourseSessionService();
+        CourseSession courseSession = courseSessionService.getCourseSessionById( id );
+        return courseSession;
+
+    }
+
 }

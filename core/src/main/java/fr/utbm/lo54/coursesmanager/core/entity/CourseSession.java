@@ -9,8 +9,6 @@ public class CourseSession {
     private Date     enddate;
     private Course   course;
     private Location location;
-    private String   courseCode;
-    private Integer  locationId;
 
     public CourseSession() {
     }
@@ -28,22 +26,6 @@ public class CourseSession {
 
     public void setId( Long id ) {
         this.id = id;
-    }
-
-    public String getCourseCode() {
-        return courseCode;
-    }
-
-    public void setCourseCode( String courseCode ) {
-        this.courseCode = courseCode;
-    }
-
-    public Integer getLocationId() {
-        return locationId;
-    }
-
-    public void setLocationId( Integer locationId ) {
-        this.locationId = locationId;
     }
 
     public Date getStartdate() {

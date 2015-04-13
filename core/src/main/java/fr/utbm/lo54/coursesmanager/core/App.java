@@ -13,7 +13,7 @@ public class App {
 
         CourseController courseController = new CourseController();
         LocationController locationController = new LocationController();
-        CourseSessionController CcourseSessionController = new CourseSessionController();
+        CourseSessionController CourseSessionController = new CourseSessionController();
 
         // register from console
 
@@ -38,15 +38,26 @@ public class App {
 
         // afficher la liste des SESSIONS
         System.out.println( "\nParcours de la liste de session" );
-        Iterator<CourseSession> it3 = CcourseSessionController.showListCourseSessions().iterator();
-        System.out.println( "-----------------------------------" );
+        Iterator<CourseSession> it3 = CourseSessionController.showListCourseSessions().iterator();
+        Iterator<CourseSession> itx = CourseSessionController.showCourseSessionsByCourse( "BD40" ).iterator();
+
+        System.out.println( "---------------LISTE SESSION BD40--------------------" );
         while ( it3.hasNext() ) {
             CourseSession cs = (CourseSession) it3.next();
             System.out.println(
-                    "start_date = " + cs.getStartdate() +
-                            "end_date = " + cs.getEnddate() +
-                            "course_code = " + cs.getCourse() +
-                            "course_code = " + cs.getCourse() );
+                    "start_date = " + cs.getStartdate() + " \t " +
+                            "end_date = " + cs.getEnddate() + " \t " +
+                            "course = " + cs.getCourse().getCode() + " \t " +
+                            "location = " + cs.getLocation().getCity() );
+        }
+        System.out.println( "-------------- LSTE SESSIONS---------------------" );
+        while ( itx.hasNext() ) {
+            CourseSession csx = (CourseSession) itx.next();
+            System.out.println(
+                    "start_date = " + csx.getStartdate() + " \t " +
+                            "end_date = " + csx.getEnddate() + " \t " +
+                            "course_code = " + csx.getCourse().getCode() + " \t " +
+                            "location_city = " + csx.getLocation().getCity() );
         }
         // afficher la liste des Location
         /*

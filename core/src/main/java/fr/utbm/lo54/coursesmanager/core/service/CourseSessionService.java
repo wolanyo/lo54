@@ -18,9 +18,23 @@ public class CourseSessionService {
 
     public List<CourseSession> getListCourseSessions() {
         HibernateCourseSessionDAO hibernatecourseSessionDao = new HibernateCourseSessionDAO();
-        List<CourseSession> courseSessionsList = hibernatecourseSessionDao.getAllCoursesSessions();
+        List<CourseSession> courseSessionsList = hibernatecourseSessionDao.getAllCoursesSession();
 
         return courseSessionsList;
+    }
+
+    public List<CourseSession> getCourseSessionsByCourse( String courseCode ) {
+        HibernateCourseSessionDAO hibernatecourseSessionDao = new HibernateCourseSessionDAO();
+        List<CourseSession> courseSessionsList = hibernatecourseSessionDao.getCoursesSessionByCourse( courseCode );
+
+        return courseSessionsList;
+    }
+
+    public CourseSession getCourseSessionById( Long id ) {
+        HibernateCourseSessionDAO hibernatecourseSessionDao = new HibernateCourseSessionDAO();
+        CourseSession courseSession = hibernatecourseSessionDao.getCourseSessionById( id );
+
+        return courseSession;
     }
 
     // service to get a CourseSession by ID

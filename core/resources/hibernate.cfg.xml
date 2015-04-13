@@ -46,7 +46,7 @@ indique au moteur hibernate les paramètres pour de connexion directe à la base
     	<!-- Object Mapping files -->
     	<mapping resource="Course.hbm.xml"/>
     	<mapping resource="Location.hbm.xml"/>
-    	<mapping resource="Client.hbm.xml"/>
+<!--     	<mapping resource="Client.hbm.xml"/> -->
     	<mapping resource="CourseSession.hbm.xml"/>
                
     </session-factory>

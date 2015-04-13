@@ -1,32 +1,26 @@
-/**
- * 
- */
 package fr.utbm.lo54.coursesmanager.core.service;
 
 import java.util.List;
 
 import fr.utbm.lo54.coursesmanager.core.entity.Client;
+import fr.utbm.lo54.coursesmanager.core.repository.HibernateClientDAO;
 
-/**
- * @author kemour
- *
- */
 public class ClientService {
 
-	//service pour enregistrer un client
-	public void registerClient(Client client){
-		
-	}
-	
-	//get a client by ID
-	public Client getClient( Integer id) {
-		
-		return null ; //replace null by a client object 
-	}
-	
-	//get a list of clients
-	public List<Client> getListClient(){
-		
-		return null ; //replace null by a list of client object 
-	}
+    // service to get the list of Client
+
+    public List<Client> getListClients() {
+        HibernateClientDAO hibernateclientDao = new HibernateClientDAO();
+        List<Client> clientsList = hibernateclientDao.getAllClient();
+
+        return clientsList;
+    }
+
+    // service to create Client
+
+    public void createClient( Client client ) {
+        HibernateClientDAO hibernateclientDao = new HibernateClientDAO();
+        hibernateclientDao.createClient( client );
+    }
+
 }
