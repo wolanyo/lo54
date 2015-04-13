@@ -13,6 +13,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import net.miginfocom.swing.MigLayout;
 import fr.utbm.lo54.coursesmanager.core.controller.CourseController;
 import fr.utbm.lo54.coursesmanager.core.entity.Course;
 
@@ -46,14 +47,22 @@ public class CourseForm extends JFrame {
         saveBoutton.addActionListener( new SaveBouttonListener() );
 
         JPanel top = new JPanel();
+        top.setLayout( new MigLayout() );
 
-        top.add( labelCode );
-        top.add( jtfCode );
+        // top.add( labelCode );
+        // top.add( jtfCode );
+        //
+        // top.add( labelTitle );
+        // top.add( jtfTitle );
+        //
+        // top.add( saveBoutton );
 
-        top.add( labelTitle );
-        top.add( jtfTitle );
+        top.add( labelCode, "gap para" );
+        top.add( jtfCode, "span, growx, wrap" );
+        top.add( labelTitle, "gap para" );
+        top.add( jtfTitle, "span, growx, wrap para" );
+        top.add( saveBoutton, "span, growx, wrap para" );
 
-        top.add( saveBoutton );
         // container.add( top, BorderLayout.NORTH );
         this.setContentPane( top );
         // this.setContentPane( container );
