@@ -27,7 +27,7 @@ public class HibernateClientDAO {
         Transaction tx = null;
         try {
             tx = session.beginTransaction();
-            session.persist( client );
+            session.save( client );
             tx.commit();
             session.flush();
         } catch ( HibernateException he ) {
@@ -99,25 +99,25 @@ public class HibernateClientDAO {
      */
     public Client getClientById( long id ) {
         Session session = this.sessionFactory.openSession();
-        // Transaction tx = null;
+        Transaction tx = null;
         Client client = new Client();
         try {
-            // tx = session.beginTransaction();
+            tx = session.beginTransaction();
             String queryString = "FROM Client WHERE id = :id";
             Query query = session.createQuery( queryString );
             query.setParameter( "id", id );
             client = (Client) query.uniqueResult();
-            // tx.commit();
-            // session.flush();
+            tx.commit();
+            session.flush();
         } catch ( HibernateException he ) {
             he.printStackTrace();
-            // if ( tx != null ) {
-            // try {
-            // tx.rollback();
-            // } catch ( HibernateException he2 ) {
-            // he2.printStackTrace();
-            // }
-            // }
+            if ( tx != null ) {
+                try {
+                    tx.rollback();
+                } catch ( HibernateException he2 ) {
+                    he2.printStackTrace();
+                }
+            }
         } finally {
             if ( session != null ) {
                 try {
