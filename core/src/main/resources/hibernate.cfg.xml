@@ -16,9 +16,9 @@ indique au moteur hibernate les paramètres pour de connexion directe à la base
 		<property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
 
 		<!-- config with a direct database connection, meaning without the JNDI directory -->
-		<property name="hibernate.connection.url">jdbc:mysql://localhost:3306/privateschool</property>
-    	<property name="hibernate.connection.username">reactivity</property>
-    	<property name="hibernate.connection.password">reactivity</property>
+		<property name="hibernate.connection.url">jdbc:mysql://localhost:3306/test</property>
+    	<property name="hibernate.connection.username">root</property>
+    	<property name="hibernate.connection.password">eric</property>
 
     	<!-- Enable Hibernate's automatic session context management -->
     	<property name="hibernate.current_session_context_class">thread</property>

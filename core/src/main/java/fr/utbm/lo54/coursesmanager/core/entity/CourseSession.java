@@ -7,7 +7,7 @@ public class CourseSession {
     private Long     id;
     private Date     startdate;
     private Date     enddate;
-    private Course   course;
+    private Course   course;  // !!!!
     private Location location;
 
     public CourseSession() {

@@ -1,5 +1,6 @@
 package fr.utbm.lo54.coursesmanager.core.repository;
 
+import fr.utbm.lo54.coursesmanager.core.repository.Interface.InterfaceDAO;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,47 +14,52 @@ import org.hibernate.stat.Statistics;
 
 import fr.utbm.lo54.coursesmanager.core.entity.CourseSession;
 import fr.utbm.lo54.coursesmanager.core.util.HibernateUtil;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 
-public class HibernateCourseSessionDAO {
+public class HibernateCourseSessionDAO implements InterfaceDAO<CourseSession, Long> {
 
     private SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-    Statistics             stats          = HibernateUtil.getSessionFactory().getStatistics();
+    Statistics stats = HibernateUtil.getSessionFactory().getStatistics();
 
     /**
      * GET LIST of a courseSession by course
      */
-    public List<CourseSession> getCoursesSessionByCourse( String courseCode ) {
+    public List<CourseSession> getCoursesSessionByCourse(String courseCode) {
         Session session = this.sessionFactory.openSession();
         Transaction tx = null;
         List<CourseSession> coursesSessionList = new ArrayList<CourseSession>();
         try {
             tx = session.beginTransaction();
-            Query query = session.createQuery( "FROM CourseSession WHERE COURSE_CODE = :code" );
-            query.setParameter( "code", courseCode );
+            Query query = session.createQuery("FROM CourseSession WHERE COURSE_CODE = :code");
+            query.setParameter("code", courseCode);
             List<CourseSession> cl = query.list();
             // initialize proxy, this lazy collection
-            for ( CourseSession cs : cl ) {
-                Hibernate.initialize( cs.getCourse() );
-                Hibernate.initialize( cs.getLocation() );
-                coursesSessionList.add( cs );
+            for (CourseSession cs : cl) {
+                Hibernate.initialize(cs.getCourse());
+                Hibernate.initialize(cs.getLocation());
+                coursesSessionList.add(cs);
             }
             tx.commit();
             session.flush();
-        } catch ( HibernateException he ) {
+        } catch (HibernateException he) {
             he.printStackTrace();
-            if ( tx != null ) {
+            if (tx != null) {
                 try {
                     tx.rollback();
-                } catch ( HibernateException he2 ) {
+                } catch (HibernateException he2) {
                     he2.printStackTrace();
                 }
             }
         } finally {
-            if ( session != null ) {
+            if (session != null) {
                 try {
                     session.close();
                     stats.logSummary();
-                } catch ( HibernateException he ) {
+                } catch (HibernateException he) {
                     he.printStackTrace();
                 }
             }
@@ -65,40 +71,27 @@ public class HibernateCourseSessionDAO {
     /**
      * GET LIST of all courseSession object
      */
-    public List<CourseSession> getAllCoursesSession() {
+    public Set<CourseSession> getList() {
         Session session = this.sessionFactory.openSession();
-        Transaction tx = null;
-        List<CourseSession> coursesSessionList = new ArrayList<CourseSession>();
+        HashSet<CourseSession> coursesSessionList = new HashSet<CourseSession>();
         try {
-            tx = session.beginTransaction();
-            Query query = session.createQuery( "from CourseSession" );
+            Query query = session.createQuery("from CourseSession");
             List<CourseSession> cl = query.list();
             // coursesSessionList = query.list();
             // initialize proxy, this lazy collection
-            for ( CourseSession cs : cl ) {
-                Hibernate.initialize( cs.getCourse() );
-                Hibernate.initialize( cs.getLocation() );
-                coursesSessionList.add( cs );
+            for (CourseSession cs : cl) {
+                Hibernate.initialize(cs.getCourse());
+                Hibernate.initialize(cs.getLocation());
+                coursesSessionList.add(cs);
             }
-
-            tx.commit();
-            session.flush();
-        } catch ( HibernateException he ) {
-            he.printStackTrace();
-            if ( tx != null ) {
-                try {
-                    tx.rollback();
-                } catch ( HibernateException he2 ) {
-                    he2.printStackTrace();
-                }
-            }
+        } catch (HibernateException e) {
+            e.printStackTrace();
         } finally {
-            if ( session != null ) {
+            if (session != null) {
                 try {
                     session.close();
-                    stats.logSummary();
-                } catch ( HibernateException he ) {
-                    he.printStackTrace();
+                } catch (HibernateException f) {
+                    f.printStackTrace();
                 }
             }
         }
@@ -108,66 +101,63 @@ public class HibernateCourseSessionDAO {
     /**
      * GET AN OBJECT COURSESESSION by ID
      */
-    public CourseSession getCourseSessionById( long id ) {
+    public CourseSession getById(Long id) {
+        return this.getById(id, false, false);
+    }
+
+    public CourseSession getById(Long id, Boolean loadCourse, Boolean loadLocation) {
         Session session = this.sessionFactory.openSession();
-        Transaction tx = null;
-        CourseSession courseSession = new CourseSession();
+        CourseSession course_session = new CourseSession();
         try {
-            tx = session.beginTransaction();
-            String queryString = "FROM CourseSession WHERE id = :id";
-            Query query = session.createQuery( queryString );
-            query.setParameter( "id", id );
-            courseSession = (CourseSession) query.uniqueResult();
-            tx.commit();
-            session.flush();
-        } catch ( HibernateException he ) {
-            he.printStackTrace();
-            if ( tx != null ) {
-                try {
-                    tx.rollback();
-                } catch ( HibernateException he2 ) {
-                    he2.printStackTrace();
-                }
+            Query q = session.createQuery("FROM CourseSession WHERE id = :id");
+            q.setParameter("id", id);
+            course_session = (CourseSession) q.uniqueResult();
+            if (loadCourse) {
+                Hibernate.initialize(course_session.getCourse());
             }
+            if (loadLocation) {
+                Hibernate.initialize(course_session.getLocation());
+            }
+        } catch (HibernateException e) {
+            e.printStackTrace();
         } finally {
-            if ( session != null ) {
+            if (session != null) {
                 try {
                     session.close();
-                    // stats.logSummary();
-                } catch ( HibernateException he ) {
-                    he.printStackTrace();
+                } catch (HibernateException f) {
+                    f.printStackTrace();
                 }
             }
         }
-        return courseSession;
+        return course_session;
     }
 
     /**
      * CREATE an object CourseSession SESSION in DataBase
      */
-    public void createCourseSession( CourseSession courseSession ) {
+    public void create(CourseSession courseSession) {
         Session session = this.sessionFactory.openSession();
         Transaction tx = null;
         try {
             tx = session.beginTransaction();
-            session.persist( courseSession );
+            session.persist(courseSession);
             tx.commit();
             session.flush();
-        } catch ( HibernateException he ) {
+        } catch (HibernateException he) {
             he.printStackTrace();
-            if ( tx != null ) {
+            if (tx != null) {
                 try {
                     tx.rollback();
-                } catch ( HibernateException he2 ) {
+                } catch (HibernateException he2) {
                     he2.printStackTrace();
                 }
             }
         } finally {
-            if ( session != null ) {
+            if (session != null) {
                 try {
                     session.close();
                     // stats.logSummary();
-                } catch ( HibernateException he ) {
+                } catch (HibernateException he) {
                     he.printStackTrace();
                 }
             }
@@ -178,29 +168,29 @@ public class HibernateCourseSessionDAO {
     /**
      * UPDATE A CourseSession
      */
-    public void updateCourseSession( CourseSession courseSession ) {
+    public void update(CourseSession courseSession) {
         Session session = this.sessionFactory.openSession();
         Transaction tx = null;
         try {
             tx = session.beginTransaction();
-            session.merge( courseSession );
+            session.merge(courseSession);
             tx.commit();
             session.flush();
-        } catch ( HibernateException he ) {
+        } catch (HibernateException he) {
             he.printStackTrace();
-            if ( tx != null ) {
+            if (tx != null) {
                 try {
                     tx.rollback();
-                } catch ( HibernateException he2 ) {
+                } catch (HibernateException he2) {
                     he2.printStackTrace();
                 }
             }
         } finally {
-            if ( session != null ) {
+            if (session != null) {
                 try {
                     session.close();
                     // stats.logSummary();
-                } catch ( HibernateException he ) {
+                } catch (HibernateException he) {
                     he.printStackTrace();
                 }
             }
@@ -211,12 +201,12 @@ public class HibernateCourseSessionDAO {
     /**
      * DELETE A CourseSession
      */
-    public void deleteCourseSession( CourseSession courseSession ) {
+    public void delete(CourseSession courseSession) {
         Session session = this.sessionFactory.openSession();
         Transaction tx = null;
         try {
             tx = session.beginTransaction();
-            session.delete( courseSession );
+            session.delete(courseSession);
             // Rechercher puis supprimer un enregistrement
             // CourseSession client = (CourseSession)
             // session.load(CourseSession.class, new
@@ -224,25 +214,104 @@ public class HibernateCourseSessionDAO {
             // session.delete(client);
             tx.commit();
             session.flush();
-        } catch ( HibernateException he ) {
+        } catch (HibernateException he) {
             he.printStackTrace();
-            if ( tx != null ) {
+            if (tx != null) {
                 try {
                     tx.rollback();
-                } catch ( HibernateException he2 ) {
+                } catch (HibernateException he2) {
                     he2.printStackTrace();
                 }
             }
         } finally {
-            if ( session != null ) {
+            if (session != null) {
                 try {
                     session.flush();
                     session.close();
                     // stats.logSummary();
-                } catch ( HibernateException he ) {
+                } catch (HibernateException he) {
                     he.printStackTrace();
                 }
             }
         }
     }
+    
+    @SuppressWarnings("unchecked")
+	public List<CourseSession> filterByStartDate(Date startDate) {
+		Session session = this.sessionFactory.openSession();
+		Criteria criteria= session.createCriteria(CourseSession.class);
+		List<CourseSession> course_sessions = new ArrayList<CourseSession>();
+		try {
+			criteria.add(Restrictions.eq("startDate",startDate));
+			course_sessions = criteria.list();
+			for (CourseSession courseSession : course_sessions) {
+				Hibernate.initialize(courseSession.getCourse());
+				Hibernate.initialize(courseSession.getLocation());
+			}
+		} catch (HibernateException e) {
+			e.printStackTrace();
+		} finally {
+			if (session != null) {
+				try {
+					session.close();
+				} catch (HibernateException f) {
+					f.printStackTrace();
+				}
+			}
+		}
+		return course_sessions;
+	}
+	@SuppressWarnings("unchecked")
+	public List<CourseSession> filterByEndDate(Date endDate) {
+		Session session = this.sessionFactory.openSession();
+		Criteria criteria= session.createCriteria(CourseSession.class);
+		List<CourseSession> course_sessions = new ArrayList<CourseSession>();
+		try {
+			criteria.add(Restrictions.eq("endDate",endDate));
+			course_sessions = criteria.list();
+			for (CourseSession courseSession : course_sessions) {
+				Hibernate.initialize(courseSession.getCourse());
+				Hibernate.initialize(courseSession.getLocation());
+			}
+		} catch (HibernateException e) {
+			e.printStackTrace();
+		} finally {
+			if (session != null) {
+				try {
+					session.close();
+				} catch (HibernateException f) {
+					f.printStackTrace();
+				}
+			}
+		}
+		return course_sessions;
+	}
+	@SuppressWarnings("unchecked")
+	public List<CourseSession> filterByDates(Date startDate, Date endDate) {
+		Session session = this.sessionFactory.openSession();
+		Criteria criteria= session.createCriteria(CourseSession.class);
+		List<CourseSession> course_sessions = new ArrayList<CourseSession>();
+		try {
+			criteria.add(Restrictions.conjunction()
+					.add(Restrictions.ge("startDate", startDate))
+					.add(Restrictions.le("endDate", endDate)));
+			course_sessions = criteria.list();
+			for (CourseSession courseSession : course_sessions) {
+				Hibernate.initialize(courseSession.getCourse());
+				Hibernate.initialize(courseSession.getLocation());
+			}
+		} catch (HibernateException e) {
+			e.printStackTrace();
+		} finally {
+			if (session != null) {
+				try {
+					session.close();
+				} catch (HibernateException f) {
+					f.printStackTrace();
+				}
+			}
+		}
+		return course_sessions;
+	}
+
 }
